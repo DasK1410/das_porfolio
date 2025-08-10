@@ -22,3 +22,17 @@
 /* .mt-10{
     margin-top: 10px;
 } */
+
+.nav-hover {
+  padding: 6px 14px;
+  border-radius: 8px;
+  margin-left: 10px; /* spacing between items */
+  transition: all 0.3s ease;
+}
+
+.nav-hover:hover {
+  background-color: #198754; /* Bootstrap green */
+  color: white !important;
+  transform: scale(1.05);
+}
+
