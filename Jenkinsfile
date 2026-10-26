@@ -1,20 +1,31 @@
+
 pipeline {
     agent any
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'GitHub checkout successful'
+                echo 'Source code checked out from GitHub main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+
+        stage('Code Quality Check') {
+            steps {
+                sh 'npm run lint'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'node -v'
-                sh 'npm -v'
-                sh 'npm ci'
                 sh 'npm run build'
             }
         }
     }
 }
+
