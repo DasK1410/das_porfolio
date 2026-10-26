@@ -2,7 +2,6 @@ import React from 'react';
 import profileImg from "./assets/passport_size.jpg";
 import dasPdf from "./assets/Das_resume.pdf";
 import './App.css';
-import insta from './assets/instagram.svg';
 function Home() {
   return (
     <section className="py-5 ">
