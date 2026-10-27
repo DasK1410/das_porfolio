@@ -36,12 +36,24 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-                        npx vercel build --prod --token="$VERCEL_TOKEN"
-                        npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+                        npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
                     '''
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully! Portfolio deployed to Vercel.'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the Console Output for details.'
+        }
+
+        always {
+            echo 'Jenkins pipeline execution finished.'
         }
     }
 }
