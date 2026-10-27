@@ -2,6 +2,15 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-22'
+    }
+
+    environment {
+        VERCEL_PROJECT = 'das-porfolio'
+        VERCEL_SCOPE = 'arul-dhas-projects'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,6 +20,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+                sh 'node --version'
+                sh 'npm --version'
                 sh 'npm ci'
             }
         }
@@ -27,6 +38,25 @@ pipeline {
             }
         }
 
+        stage('Link Vercel Project') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'vercel-token',
+                        variable: 'VERCEL_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        npx vercel link \
+                            --yes \
+                            --project="$VERCEL_PROJECT" \
+                            --scope="$VERCEL_SCOPE" \
+                            --token="$VERCEL_TOKEN"
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Vercel') {
             steps {
                 withCredentials([
@@ -36,22 +66,10 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                        node -e '
-                            const t = process.env.VERCEL_TOKEN || "";
-                            console.log("Token length:", t.length);
-                            console.log(
-                                "Contains whitespace:",
-                                /\\s/.test(t)
-                            );
-                            console.log(
-                                "Has surrounding whitespace:",
-                                t !== t.trim()
-                            );
-                        '
-
                         npx vercel deploy \
                             --prod \
                             --yes \
+                            --scope="$VERCEL_SCOPE" \
                             --token="$VERCEL_TOKEN"
                     '''
                 }
