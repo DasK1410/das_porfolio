@@ -1,4 +1,4 @@
-```groovy
+
 pipeline {
     agent any
 
@@ -39,11 +39,20 @@ pipeline {
                         node -e '
                             const t = process.env.VERCEL_TOKEN || "";
                             console.log("Token length:", t.length);
-                            console.log("Contains whitespace:", /\\s/.test(t));
-                            console.log("Has surrounding whitespace:", t !== t.trim());
+                            console.log(
+                                "Contains whitespace:",
+                                /\\s/.test(t)
+                            );
+                            console.log(
+                                "Has surrounding whitespace:",
+                                t !== t.trim()
+                            );
                         '
 
-                        npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+                        npx vercel deploy \
+                            --prod \
+                            --yes \
+                            --token="$VERCEL_TOKEN"
                     '''
                 }
             }
@@ -64,4 +73,4 @@ pipeline {
         }
     }
 }
-```
+
