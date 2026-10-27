@@ -2,6 +2,15 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS-22'
+    }
+
+    environment {
+        VERCEL_PROJECT = 'das-porfolio'
+        VERCEL_SCOPE = 'arul-dhas-projects'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -9,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Check Node.js') {
+        stage('Check Node.js and npm') {
             steps {
                 sh 'node --version'
                 sh 'npm --version'
@@ -33,15 +42,58 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
+        stage('Link Vercel Project') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'vercel-token',
+                        variable: 'VERCEL_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        npx --yes vercel link \
+                            --yes \
+                            --project="$VERCEL_PROJECT" \
+                            --scope="$VERCEL_SCOPE" \
+                            --token="$VERCEL_TOKEN"
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Vercel') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'vercel-token',
+                        variable: 'VERCEL_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        npx --yes vercel deploy \
+                            --prod \
+                            --yes \
+                            --scope="$VERCEL_SCOPE" \
+                            --token="$VERCEL_TOKEN"
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'CI pipeline completed successfully!'
+            echo 'CI/CD pipeline completed successfully!'
+            echo 'Portfolio deployed to Vercel production.'
         }
 
         failure {
-            echo 'CI pipeline failed. Check Console Output.'
+            echo 'Pipeline failed. Check the Console Output.'
+        }
+
+        always {
+            echo 'Jenkins pipeline execution finished.'
         }
     }
 }
