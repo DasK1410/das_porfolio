@@ -7,6 +7,7 @@ pipeline {
     }
 
     environment {
+        GIT_BRANCH = 'main'
         VERCEL_PROJECT = 'das-porfolio'
         VERCEL_SCOPE = 'arul-dhas-projects'
     }
@@ -15,6 +16,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Git Pull') {
+            steps {
+                sh '''
+                    git fetch origin "$GIT_BRANCH"
+                    git pull --ff-only origin "$GIT_BRANCH"
+                    git log -1 --oneline
+                '''
             }
         }
 
@@ -97,4 +108,3 @@ pipeline {
         }
     }
 }
-
