@@ -11,7 +11,7 @@ function Home() {
           {/* Left Side Text */}
           <div className="col-md-7 text-md-start text-center mt-4 mt-md-0">
             <h5 className="text-success">Hello, I'm</h5>
-            <h1 className="fw-bold">Arul Doos</h1>
+            <h1 className="fw-bold">Arul Daas</h1>
             <h3 className="text-success">React.js Frontend Developer</h3>
             <p className="text-muted">
               I am a postgraduate student pursuing an MCA, with a solid foundation
